@@ -1,9 +1,10 @@
 # CHALLENGE 21 BOOK SEARCH ENGINE
 
 ## DESCRIPTION
-
+With this application, you can search for books on the Google Books API. If you are interested in the book, you can create an account, or log in if you already have one. By logging in, you can save books so that you can view them later.
 
 ## HOW TO USE
+Very simple to use, all you have to do is enter a book and it will search for book titles or authors that match your search criteria closely. Then it will return books for you. If you like the book and are logged in you can save the book.
 
 
 ## ACCEPTANCE CRITERIA

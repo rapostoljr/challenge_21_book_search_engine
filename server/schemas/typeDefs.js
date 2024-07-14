@@ -29,16 +29,17 @@ const typeDefs = `
 
     type Auth {
         token: String
-        user: [User]
+        user: User
     }
 
     input saveBookInput {
         bookId: ID!
         title: String
-        author: [String]
+        authors: [String]
         description: String
         image: String
         link: String
+        userId: ID!
     }
 `;
 

@@ -1,16 +1,9 @@
 const { saveBook } = require('../controllers/user-controller');
-const { User } = require('../models');
+const { User, Book } = require('../models');
 const { signToken, AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
   Query: {
-    // // I might need, but prompt is only asking for me
-    // users: async () => {
-    //   return User.find().populate('savedBooks');
-    // },
-    // user: async (parent, { username }) => {
-    //   return User.findOne({ username }).populate('savedBooks');
-    // },
     me: async (parent, args, context) => {
       if (context.user) {
         return User.findOne({ _id: context.user._id }).populate('savedBooks')        
@@ -23,11 +16,11 @@ const resolvers = {
       const user = await User.findOne({
         $or: [{ username }, { email }],
       });
-
       if (!user) {
         throw AuthenticationError;
       }
-      const correctPassword = await User.isPasswordCorrect(password);
+
+      const correctPassword = await user.isCorrectPassword(password);
       if (!correctPassword) {
         throw AuthenticationError;
       }
@@ -37,15 +30,35 @@ const resolvers = {
     },
     addUser: async(parent, { username, email, password }) => {
       const user = await User.create({ username, email, password });
-      const token = signToken(user);
       if (!user) {
         throw new Error('Failed to create user.');
       }
+      const token = signToken(user);
       return { token, user };
     },
-    // saveBook: async(parent,  ) => {
-      
-    // }
+    saveBook: async (parent, {input}) => {
+      try {
+        const loggedUser = await User.findOneAndUpdate(
+          { _id: input.userId },
+          { $addToSet: { savedBooks: input } },
+          { new: true, runValidators: true }
+        );
+        return loggedUser;
+      } catch (err) {
+        return AuthenticationError;
+      }
+    },
+    removeBook: async (parent, {user, params}) =>{
+      const loggedUser = await User.findOneAndUpdate(
+        { _id: user._id },
+        { $pull: { savedBooks: { bookId: params.bookId } } },
+        { new: true }
+      );
+      if (!loggedUser) {
+        throw new Error ("Failed to find user.");
+      }
+      return loggedUser;
+    }
   },
 };
 
