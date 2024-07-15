@@ -1,15 +1,20 @@
-const { saveBook } = require('../controllers/user-controller');
+// const { saveBook } = require('../controllers/user-controller');
 const { User, Book } = require('../models');
 const { signToken, AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
   Query: {
-    me: async (parent, args, context) => {
-      if (context.user) {
-        return User.findOne({ _id: context.user._id }).populate('savedBooks')        
-      }
-      throw AuthenticationError('You need to be logged in!');
-    }
+    me: async (parent,{ user = null, params }) => {
+      const foundUser = await User.findOne({
+        $or: [{ _id: user ? user._id : params._id }, { username: params.username }],
+      });
+      console.log(params);
+      if (!foundUser) {
+        console.log('Cannot find user')
+        return null;
+      } 
+      return foundUser;
+    }   
   },
   Mutation: {
     login: async (parent, { username, email, password }) => {
