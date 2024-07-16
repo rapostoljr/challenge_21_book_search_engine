@@ -6,6 +6,7 @@ With this application, you can search for books on the Google Books API. If you 
 ## HOW TO USE
 Very simple to use, all you have to do is enter a book and it will search for book titles or authors that match your search criteria closely. Then it will return books for you. If you like the book and are logged in you can save the book.
 
+![alt main](./client/src/assets/website.jpg)
 
 ## ACCEPTANCE CRITERIA
 GIVEN a book search engine\
